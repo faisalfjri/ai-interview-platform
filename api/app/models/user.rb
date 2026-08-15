@@ -2,8 +2,9 @@
 
 class User < ApplicationRecord
   has_secure_password
+  validates :password, length: { minimum: 6 }, if: :password_digest_changed?
 
-  ROLES = %w[admin user].freeze
+  ROLES = %w[admin assessor user].freeze
 
   validates :email, presence: true,
                     uniqueness: { case_sensitive: false },

@@ -14,7 +14,7 @@ export default function SignupPage() {
   const setAuth = useSetAtom(authAtom);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"admin" | "user">("user");
+  const [role, setRole] = useState<"admin" | "assessor" | "user">("assessor");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,8 +28,11 @@ export default function SignupPage() {
       saveToken(token);
       setAuth({ token });
       navigate("/assessments");
-    } catch {
-      setError("Signup failed. Please try again.");
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.errors?.[0]?.message ??
+        "Signup failed. Please try again.";
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -72,16 +75,20 @@ export default function SignupPage() {
             <Label>Role</Label>
             <RadioGroup
               value={role}
-              onValueChange={(v) => setRole(v as "admin" | "user")}
+              onValueChange={(v) => setRole(v as "admin" | "assessor" | "user")}
               className="flex gap-4"
             >
               <div className="flex items-center gap-2">
-                <RadioGroupItem value="user" id="role-user" />
-                <Label htmlFor="role-user" className="font-normal cursor-pointer">User</Label>
+                <RadioGroupItem value="assessor" id="role-assessor" />
+                <Label htmlFor="role-assessor" className="font-normal cursor-pointer">Assessor</Label>
               </div>
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="admin" id="role-admin" />
                 <Label htmlFor="role-admin" className="font-normal cursor-pointer">Admin</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value="user" id="role-user" />
+                <Label htmlFor="role-user" className="font-normal cursor-pointer">User</Label>
               </div>
             </RadioGroup>
           </div>
